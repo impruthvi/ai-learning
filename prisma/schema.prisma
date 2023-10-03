@@ -1,0 +1,69 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+
+
+// course contains many units
+model Course {
+  id    String @id @default(cuid())
+  name  String
+  image String
+  units Unit[]
+}
+
+// unit contains many chapters
+model Unit {
+  id       String @id @default(cuid())
+  courseId String
+
+  name     String
+  course   Course    @relation(fields: [courseId], references: [id])
+  chapters Chapter[]
+
+  @@index([courseId], name: "courseId")
+}
+
+model Chapter {
+  id     String @id @default(cuid())
+  unitId String
+
+  name               String
+  youtubeSearchQuery String
+  videoId            String?
+  summary            String?    @db.VarChar(3000)
+  unit               Unit       @relation(fields: [unitId], references: [id])
+  questions          Question[]
+
+  @@index([unitId], name: "unitId")
+}
+
+model Question {
+  id        String @id @default(cuid())
+  chapterId String
+
+  question String  @db.VarChar(3000)
+  answer   String  @db.VarChar(3000)
+  options  String  @db.VarChar(3000)
+  chapter  Chapter @relation(fields: [chapterId], references: [id])
+
+  @@index([chapterId], name: "chapterId")
+}
+
+model UserSubscription {
+  id                     String    @id @default(cuid())
+  userId                 String    @unique
+  stripeCustomerId       String    @unique @map(name: "stripe_customer_id")
+  stripeSubscriptionId   String?   @unique @map(name: "stripe_subscription_id")
+  stripePriceId          String?   @map(name: "stripe_price_id")
+  stripeCurrentPeriodEnd DateTime? @map(name: "stripe_current_period_end")
+}
