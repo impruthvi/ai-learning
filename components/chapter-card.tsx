@@ -19,7 +19,7 @@ export type ChapterCardHandler = {
 };
 
 const ChapterCard = React.forwardRef<ChapterCardHandler, Props>(
-  ({ chapter }, ref) => {
+  ({ chapter, chapterIndex, setCompletedChapters, completedChapters }, ref) => {
     const { toast } = useToast();
     const [success, setSuccess] = React.useState<boolean | null>(null);
     const { mutate: getChapterInfo, isLoading } = useMutation({
@@ -31,13 +31,31 @@ const ChapterCard = React.forwardRef<ChapterCardHandler, Props>(
       },
     });
 
+    const addChapterIdToSet = React.useCallback(() => {
+      setCompletedChapters((prev) => {
+        const newSet = new Set(prev);
+        newSet.add(chapter.id);
+        return newSet;
+      });
+    }, [chapter.id, setCompletedChapters]);
+
+    React.useEffect(() => {
+      if (chapter.videoId) {
+        setSuccess(true);
+        addChapterIdToSet;
+      }
+    }, [chapter, addChapterIdToSet]);
+
     React.useImperativeHandle(ref, () => ({
       async triggerLoad() {
+        if (chapter.videoId) {
+          addChapterIdToSet();
+          return;
+        }
         getChapterInfo(undefined, {
-          onSuccess: (data) => {
+          onSuccess: () => {
             setSuccess(true);
-            console.log(data);
-            
+            addChapterIdToSet();
           },
           onError: (error) => {
             console.error(error);
@@ -47,6 +65,7 @@ const ChapterCard = React.forwardRef<ChapterCardHandler, Props>(
               description: "There was an error loading your chapter",
               variant: "destructive",
             });
+            addChapterIdToSet();
           },
         });
       },
