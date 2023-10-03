@@ -10,12 +10,18 @@ import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
 import { Plus, Trash } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { useToast } from "./ui/use-toast";
 
 type Props = {};
 
 type Input = z.infer<typeof createChaptersSchema>;
 
 const CreateCourseForm = () => {
+  const router = useRouter();
+  const { toast } = useToast();
 
   const form = useForm<Input>({
     resolver: zodResolver(createChaptersSchema),
@@ -25,8 +31,43 @@ const CreateCourseForm = () => {
     },
   });
 
+  const { mutate: createChapters, isLoading } = useMutation({
+    mutationFn: async ({ title, units }: Input) => {
+      const response = await axios.post("/api/courses", {
+        title,
+        units,
+      });
+      return response.data;
+    },
+  });
+
   function onSubmit(data: Input) {
-    console.log(data);
+    if (data.units.some((unit) => unit === "")) {
+      toast({
+        title: "Error",
+        description: "Please fill all the units",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    createChapters(data, {
+      onSuccess: ({ course_id }) => {
+        toast({
+          title: "Success",
+          description: "Course created successfully",
+        });
+        router.push(`/create/${course_id}`);
+      },
+      onError: (error) => {
+        console.error(error);
+        toast({
+          title: "Error",
+          description: "Something went wrong",
+          variant: "destructive",
+        });
+      },
+    });
   }
 
   form.watch();
