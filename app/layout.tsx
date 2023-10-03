@@ -5,6 +5,8 @@ import { Inter, Lexend } from "next/font/google";
 import Navbar from "@/components/navbar";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { cn } from "@/lib/utils";
+import { Toaster } from "@/components/ui/toaster";
+import QueryProviders from "@/providers/query-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,16 +24,19 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="en">
-        <body
-          className={cn(lexend.className, "antialiased min-h-screen pt-16")}
-        >
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <Navbar />
-            {children}
-          </ThemeProvider>
-        </body>
-      </html>
+      <QueryProviders>
+        <html lang="en">
+          <body
+            className={cn(lexend.className, "antialiased min-h-screen pt-16")}
+          >
+            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+              <Navbar />
+              {children}
+              <Toaster />
+            </ThemeProvider>
+          </body>
+        </html>
+      </QueryProviders>
     </ClerkProvider>
   );
 }
