@@ -1,18 +1,11 @@
 import { PrismaClient } from "@prisma/client";
 
-import "server-only";
-
 declare global {
-  var cachedPrisma: PrismaClient;
+  var prisma: PrismaClient | undefined;
 }
 
-export let prisma: PrismaClient;
+export const prisma = global.prisma || new PrismaClient();
 
-if (process.env.NODE_ENV === "production") {
-  prisma = new PrismaClient();
-} else {
-  if (!global.cachedPrisma) {
-    global.cachedPrisma = new PrismaClient();
-  }
-  prisma = global.cachedPrisma;
-}
+if (process.env.NODE_ENV !== "production") global.prisma = prisma;
+
+export default prisma;
