@@ -1,13 +1,14 @@
-"use client";
-
-import { SignInButton, UserButton, useAuth } from "@clerk/nextjs";
 import Link from "next/link";
 import React from "react";
 import { ThemeToggle } from "./theme-toggle";
 
-const Navbar = () => {
-  const { isSignedIn } = useAuth();
+import SignInButton from "./sign-in-button";
+import UserAccountNav from "./user-account-nav";
+import { getAuthSession } from "@/lib/auth";
 
+const Navbar = async () => {
+  const session = await getAuthSession();
+ 
   return (
     <nav className="fixed inset-x-0 top-0 bg-white dark:bg-gray-950 z-[10] h-fit border-b border-zinc-300 py-2">
       <div className="flex items-center justify-center h-full gap-2 px-8 mx-auto sm:justify-between max-w-7xl">
@@ -20,7 +21,7 @@ const Navbar = () => {
           <Link href="/gallery" className="mr-3">
             Gallery
           </Link>
-          {isSignedIn && (
+          {session?.user && (
             <>
               <Link href="/create" className="mr-3">
                 Create Course
@@ -32,7 +33,11 @@ const Navbar = () => {
           )}
           <ThemeToggle className="mr-3" />
           <div className="flex items-center">
-            {isSignedIn ? <UserButton afterSignOutUrl="/" /> : <SignInButton />}
+            {session?.user ? (
+              <UserAccountNav user={session.user} />
+            ) : (
+              <SignInButton />
+            )}
           </div>
         </div>
       </div>

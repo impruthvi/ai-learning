@@ -1,7 +1,7 @@
 "use client";
 
 import ConfirmChapters from "@/components/confirm-chapter";
-import { useAuth } from "@clerk/nextjs";
+// import { useAuth } from "@clerk/nextjs";
 import { Info } from "lucide-react";
 import { redirect } from "next/navigation";
 import React, { useEffect } from "react";
@@ -45,8 +45,8 @@ const CreateChapters = ({ params: { courseId } }: Props) => {
     });
   }, []);
 
-  const { userId } = useAuth();
-  if (!userId) return redirect("/gallery");
+  // const { userId } = useAuth();
+  // if (!userId) return redirect("/gallery");
 
   return (
     <div className="flex flex-col items-start max-w-xl mx-auto my-16">
