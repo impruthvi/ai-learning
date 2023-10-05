@@ -1,4 +1,3 @@
-import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter, Lexend } from "next/font/google";
@@ -23,7 +22,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider>
       <QueryProviders>
         <html lang="en">
           <body
@@ -37,6 +35,5 @@ export default function RootLayout({
           </body>
         </html>
       </QueryProviders>
-    </ClerkProvider>
   );
 }

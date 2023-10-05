@@ -3,15 +3,14 @@
 import React from "react";
 import { redirect } from "next/navigation";
 import { InfoIcon } from "lucide-react";
-import { useAuth } from "@clerk/nextjs";
 import CreateCourseForm from "@/components/create-cource-form";
 
 type Props = {};
 
 const CreatePage =  (props: Props) => {
-  const { userId } = useAuth();
+  // const { userId } = useAuth();
 
-  if (!userId) return redirect("/gallery");
+  // if (!userId) return redirect("/gallery");
 
   return (
     <div className="flex flex-col items-start max-w-xl px-8 mx-auto my-16 sm:px-0">
