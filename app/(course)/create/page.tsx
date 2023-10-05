@@ -1,16 +1,16 @@
-"use client";
-
 import React from "react";
 import { redirect } from "next/navigation";
 import { InfoIcon } from "lucide-react";
 import CreateCourseForm from "@/components/create-cource-form";
+import { getAuthSession } from "@/lib/auth";
 
 type Props = {};
 
-const CreatePage =  (props: Props) => {
-  // const { userId } = useAuth();
-
-  // if (!userId) return redirect("/gallery");
+const CreatePage =  async (props: Props) => {
+  const session = await getAuthSession();
+  if (!session?.user) {
+    return redirect("/gallery");
+  }
 
   return (
     <div className="flex flex-col items-start max-w-xl px-8 mx-auto my-16 sm:px-0">
