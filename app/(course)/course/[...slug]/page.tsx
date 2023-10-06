@@ -29,18 +29,18 @@ const CoursePage = async ({ params: { slug } }: Props) => {
     },
   });
   if (!course) {
-    return redirect("/gallery");
+    return redirect("/");
   }
   let unitIndex = parseInt(unitIndexParam);
   let chapterIndex = parseInt(chapterIndexParam);
 
   const unit = course.units[unitIndex];
   if (!unit) {
-    return redirect("/gallery");
+    return redirect("/");
   }
   const chapter = unit.chapters[chapterIndex];
   if (!chapter) {
-    return redirect("/gallery");
+    return redirect("/");
   }
   const nextChapter = unit.chapters[chapterIndex + 1];
   const prevChapter = unit.chapters[chapterIndex - 1];
